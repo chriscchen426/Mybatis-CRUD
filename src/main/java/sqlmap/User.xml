@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="test">
+	<select id="findUserById" parameterType="int" resultType="domain.User">
+		select * from user where id = #{id}
+	</select>
+	<select id="findUserByName" parameterType="java.lang.String" resultType="domain.User">
+		select * from user where username like '%${value}%'
+	</select>
+	<!-- #{}:1.表示一个占位符，向占位符输入参数，mybatis自动进行java类型和jdbc类型的转换。
+	2.程序员不需要考虑参数的类型，比如：传入字符串，mybatis最终拼接好的sql就是参数两边加单引号。
+	3.#{}接收pojo(Plain Old Java Object Java数据对象)数据，可以使用OGNL(就是el表达式)解析出pojo的属性值。
+${}:1.表示sql的拼接，通过${}接收参数，将参数的内容不加任何修饰拼接在sql中。
+ 	2.${}也可以接收pojo数据，可以使用OGNL解析出pojo的属性值。
+ 	3.缺点:不能防止sql注入。 -->
+ 	
+ 	<insert id="insertUser" parameterType="domain.User" >
+        <!-- selectKey将主键返回，需要再返回
+             parameterType：指定输入参数类型是 POJO （包括用户信息）
+             添加selectKey实现将主键返回
+             keyProperty:返回的主键存储在pojo中的哪个属性
+             order：selectKey的执行顺序，是相对与insert语句来说，由于mysql的自增原理执行完insert语句之后才将主键生成，所以这里selectKey的执行顺序为after
+             resultType:返回的主键（LAST_INSERT_ID()）是什么类型
+             LAST_INSERT_ID():是mysql的函数，返回auto_increment自增列新记录id值。
+             #{}中指定POJO参数的属性名，接收到POJO对象的属性值，Mybatis通过OGNL获取对象的属性值
+        -->
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+
+
+        insert into user(id, username, birthday, sex, address)
+        values(#{id}, #{username}, #{birthday}, #{sex}, #{address})
+    </insert>
+    
+    <delete id="deleteUser" parameterType="int">
+    	delete from user where id = #{id}
+    </delete>
+    
+    <update id="updateUser" parameterType="domain.User">
+    	update user set username = #{username} where id = #{id}
+    </update>
+</mapper>

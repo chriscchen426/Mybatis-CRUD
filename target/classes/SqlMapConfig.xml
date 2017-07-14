@@ -1,0 +1,24 @@
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- if we integration with spring, all environments will withdraw -->
+	<environments default="development">
+		<environment id="development">
+			<!-- use JDBC -->
+			<transactionManager type="JDBC" />
+			<!-- database connections pool -->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"></property>
+				<property name="url" value="jdbc:mysql://localhost:3306/mydb?characterEncoding=utf-8"></property>
+				<property name="username" value="root"></property>
+				<property name="password" value="123456"></property>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<mappers>
+		<mapper resource="sqlmap/User.xml" />
+	</mappers>
+</configuration>
